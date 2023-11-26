@@ -4,8 +4,9 @@
  * @param  {any} args
  * @returns
  */
-/*Function.prototype.myApply = function (context, args) {
- // 判断调用myApply的是否为函数
+
+Function.prototype.myApply = function (context, args) {
+  // 判断调用myApply的是否为函数
   if (typeof this !== "function") {
     throw new TypeError("Function.prototype.myApply - 被调用的对象必须是函数");
   }
@@ -32,7 +33,7 @@
   return result;
 };
 
-const array = ["a", "b"];
+/*const array = ["a", "b"];
 const elements = [0, 1, 2];
 array.push.myApply(array, elements);
 console.log("myApply", array);
@@ -47,31 +48,38 @@ console.dir(Function.prototype.apply, "apply");*/
  * @param  {...any} args
  * @returns
  */
-// Function.prototype.myCall = function(context, ...args){
-//   context = context || globalThis
+Function.prototype.myCall = function (context, ...args) {
+  context = context || globalThis;
 
-//   let fn = Symbol('key')
-//   context[fn] = this
-//   const res = context[fn](...args)
-//   delete context[fn]
-//   return res
-// }
+  let fn = Symbol("key");
+  context[fn] = this;
+  const res = context[fn](...args);
+  delete context[fn];
+  return res;
+};
 
-// const test = {
-//   name: "xxx",
-//   hello: function () {
-//     console.log(`hello,${this.name}!`);
-//   },
-//   add: function (a, b) {
-//     return a + b;
-//   },
-// };
+const test = {
+  name: "xxx",
+  hello: function () {
+    console.log(`hello,${this.name}!`);
+  },
+  add: function (a, b) {
+    return a + b;
+  },
+};
 // const obj = { name: "world" };
 // test.hello.myCall(obj); //hello,world!
 // test.hello.call(obj);//hello,world!
 // console.log(test.add.myCall(null, 1, 2));//3
 // console.log(test.add.call(null, 1, 2));//3
 
+/**
+ *
+ *  @name myBind
+ * @param {*} context
+ * @param  {...any} ...args
+ * @returns
+ */
 Function.prototype.myBind = function (context, ...args) {
   context = context || globalThis;
   const _this = this;
@@ -82,22 +90,16 @@ Function.prototype.myBind = function (context, ...args) {
     return _this.apply(context, [...innerArgs, ...args]);
   };
 };
-const test = {
-  name: "xxx",
-  hello: function (a, b, c) {
-    console.log(`hello,${this.name}!`, a + b + c);
-  },
-};
 
-const obj = { name: "world" };
-let hello1 = test.hello.myBind(obj, 1);
-let hello2 = test.hello.bind(obj, 1);
-hello1(2, 3); //hello,world! 6
-hello2(2, 3); //hello,world! 6
-console.log(new hello1(2, 3));
+// const obj = { name: "world" };
+// let hello1 = test.hello.myBind(obj, 1);
+// let hello2 = test.hello.bind(obj, 1);
+// hello1(2, 3); //hello,world! 6
+// hello2(2, 3); //hello,world! 6
+// console.log(new hello1(2, 3));
 //hello,undefined! 6
 // hello {}
-console.log(new hello2(2, 3));
+// console.log(new hello2(2, 3));
 //hello,undefined! 6
 // hello {}
 
